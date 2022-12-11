@@ -4,9 +4,13 @@ las conexiones se dispondrán de la manera que se muestra aquí:
 
 \includegraphics[width=\linewidth]{chars-display-wiring.jpg}
 
-Usaremos una librería que gestiona por nosotros la comunicación con el display
-a través del bus I2C. Solo nos queda reenviar los datos recibidos al driver del
-LCD:
+Usaremos la librería \verb|LiquidCrystal_I2C|\footnotemark que gestiona por
+nosotros la comunicación con el display a través del bus I2C. Solo nos queda
+reenviar los datos recibidos al driver del LCD:
+
+\footnotetext{\url{
+    https://github.com/johnrickman/LiquidCrystal_I2C/archive/refs/tags/1.1.3.zip
+}}
 
 \lstinputlisting[language=C++, caption=chars-display.ino]{
     1/chars-display/chars-display.ino

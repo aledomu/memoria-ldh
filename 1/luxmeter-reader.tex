@@ -29,7 +29,18 @@ terminales del fotorresistor, $R_r$ es el valor de la resistencia fija
 (\emph{1 K$\Omega$}) y $R_l$ el valor de resistencia del fotorresistor.
 
 La programación de la placa Arduino se realizaría así teniendo en cuenta estos
-procedimientos:
+procedimientos. Usaremos el modo de bajo consumo para optimizar el
+funcionamiento, y para ello utilizaremos la librería
+\verb|Low-Power|\footnotemark, además de \verb|LiquidCrystal_I2C|\footnotemark
+para la gestión del display LCD:
+
+\footnotetext{\url{
+    https://github.com/rocketscream/Low-Power/archive/refs/tags/V1.81.zip
+}}
+
+\footnotetext{\url{
+    https://github.com/johnrickman/LiquidCrystal_I2C/archive/refs/tags/1.1.3.zip
+}}
 
 \lstinputlisting[language=C++, caption=luxmeter-reader.ino]{
     1/luxmeter-reader/luxmeter-reader.ino
