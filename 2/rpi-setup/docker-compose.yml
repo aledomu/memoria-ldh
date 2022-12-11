@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  controller:
+    image: docker.io/domoticz/domoticz:2022.2
+    container_name: domoticz
+    restart: always
+    depends_on:
+      - gateway
+    ports:
+      - 8080:8080
+    volumes:
+      # Esto sirve para administrar el estado mutable y mantener el contenido
+      # del contenedor sin modificar
+      - domoticz_data:/opt/domoticz/userdata
+      # Esto permite utilizar la configuracion de hora del sistema host
+      - /etc/localtime:/etc/localtime
+    networks:
+      - mysensors_net
+  gateway:
+    build:
+      context: .
+      dockerfile: mysgw.Dockerfile
+    container_name: mysensors
+    restart: on-failure
+    devices:
+      - /dev/spidev0.0:/dev/spidev0.0
+    volumes:
+      - /sys:/sys
+    networks:
+      - mysensors_net
+
+volumes:
+  domoticz_data:
+
+networks:
+  mysensors_net:

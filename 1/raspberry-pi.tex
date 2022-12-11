@@ -1,0 +1,81 @@
+Instalaremos la distribución Raspbian 10 Lite. Para ello, descargaremos la
+imagen recomendada para la práctica\footnotemark. Luego, descomprimiremos el
+archivo, lo cual nos dará una imagen que deberemos grabar en una tarjeta SD. En
+Linux, esto puede realizarse mediante la siguiente orden desde la terminal
+desde el directorio donde se encuentra la imagen, siendo \verb|/dev/sdb| el
+nodo de dispositivo correspondiente a la tarjeta:
+
+\footnotetext{\url{
+    https://coria.dte.us.es/~bellido/2021-05-07-raspios-buster-armhf-lite.zip
+}}
+
+\begin{lstlisting}[language=sh]
+sudo dd if=./2021-05-07-raspios-buster-armhf-lite.img of=/dev/sdb bs=4M status=progress
+\end{lstlisting}
+
+Podrían usarse otras distribuciones Linux, como Fedora IoT. Sin embargo, el
+problema es que el software que instalaremos en ejercicios posteriores
+requiere de una interfaz al puerto GPIO obsoleta que no todas las
+distribuciones tienen habilitada.
+
+Para habilitar el acceso por SSH desde el primer arranque, colocaremos un
+archivo vacío llamado \verb|ssh| (sin extensión) en la raíz de la partición
+etiquetada como \verb|boot|. Sin embargo, para que esto sea efectivo sin más,
+la conexión a la red deberá ser por cable y sin necesitar adquirir una
+dirección IP estática desde el propio dispositivo. Sin embargo, no es este el
+caso, dado que usaremos una red WiFi con dirección IP estática. Para configurar
+la conexión a la red WiFi adecuada, en nuestro caso con SSID y contraseña
+\verb|honeypot| con cifrado WPA personal (WPA-PSK), debemos poner el siguiente
+archivo en la raíz de la partición \verb|boot|:
+
+\lstinputlisting[caption=wpa\_supplicant.conf]{
+    1/raspberry-pi/wpa_supplicant.conf
+}
+
+Para la asignación estática de IP, añadiremos el siguiente texto al final del
+archivo \verb|/etc/dhcpcd.conf| en la partición etiquetada \verb|rootfs|:
+
+\lstinputlisting{1/raspberry-pi/dhcpcd.conf}
+
+No se ha usado una conexión cableada dado que ello requeriría el uso de dos
+puestos en el aula. Con el método empleado, sin embargo, solo hace falta un
+puesto, y en caso de usar un punto de acceso propio (por ejemplo, con el móvil)
+ni siquiera se depende del setup del aula.
+
+Al iniciar la Raspberry Pi con la tarjeta insertada, nos conectaremos por SSH
+con el usuario \verb|pi| y la contraseña \verb|raspberry| a la dirección IP de
+la Raspberry Pi, en nuestro caso \verb|10.42.0.90|. Una vez dentro,
+ejecutaremos la herramienta de configuración con permisos de administrador:
+
+\begin{lstlisting}[language=sh]
+sudo raspi-config
+\end{lstlisting}
+
+Pondremos los siguientes ajustes:
+
+\begin{itemize}
+\item \emph{System Options}:
+\begin{itemize}
+\item \emph{Password}: (cualquiera)
+\item \emph{Hostname}: rpi90
+\end{itemize}
+\item \emph{Interface Options $\rightarrow$ SPI}: Yes
+\item \emph{Localisation Options}:
+\begin{itemize}
+\item \emph{Locale}: es\_ES.UTF-8
+\item \emph{Timezone}: Europe, Madrid
+\item \emph{WLAN Country}: ES Spain
+\end{itemize}
+\item \emph{Advanced Options $\rightarrow$ Expand Filesystem}
+\end{itemize}
+
+Una vez acabado, cerramos y reiniciamos, tal y como nos pide. Luego volveremos
+a ejecutar la herramienta y generaremos el mapa de teclado adecuado yendo a
+\emph{Localisation Options $\rightarrow$ Keyboard}.
+
+Finalmente, actualizamos el sistema sin cambiar de versión para recibir mejoras
+de seguridad en caso de que existan, reiniciando otra vez tras los cambios:
+\begin{lstlisting}[language=sh]
+sudo apt-get update -y
+sudo apt-get upgrade -y
+\end{lstlisting}

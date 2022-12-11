@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name "BC547C")(type "KiCad")(uri "${KIPRJMOD}/BC547C")(options "")(descr ""))
+  (lib (name "G3MB-202P")(type "KiCad")(uri "${KIPRJMOD}/G3MB-202P")(options "")(descr ""))
+)

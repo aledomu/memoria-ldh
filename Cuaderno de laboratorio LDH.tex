@@ -1,0 +1,96 @@
+\documentclass[12pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[skip=10pt plus1pt, indent=20pt]{parskip}
+\usepackage[spanish]{babel}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{graphicx}
+
+\newcommand{\questionb}[1]{\bigskip {\large \item \emph{#1}}\bigskip}
+
+\renewcommand\lstlistingname{Código}
+\renewcommand\lstlistlistingname{Códigos}
+
+\lstdefinelanguage{Rust}{%
+  sensitive%
+, morecomment=[l]{//}%
+, morecomment=[s]{/*}{*/}%
+, moredelim=[s][{\itshape\color[rgb]{0,0,0.75}}]{\#[}{]}%
+, morestring=[b]{"}%
+, alsodigit={}%
+, alsoother={}%
+, alsoletter={!}%
+, morekeywords={break, continue, else, for, if, in, loop, match, return, while}  % control flow keywords
+, morekeywords={as, const, let, move, mut, ref, static}  % in the context of variables
+, morekeywords={dyn, enum, fn, impl, Self, self, struct, trait, type, union, use, where}  % in the context of declarations
+, morekeywords={crate, extern, mod, pub, super}  % in the context of modularisation
+, morekeywords={unsafe}  % markers
+, morekeywords={abstract, alignof, become, box, do, final, macro, offsetof, override, priv, proc, pure, sizeof, typeof, unsized, virtual, yield}  % reserved identifiers
+}%
+
+\lstdefinestyle{colouredRust}%
+{ keywordstyle=[2]\color[rgb]{0.75, 0, 0}% traits
+, keywordstyle=[3]\color[rgb]{0, 0.5, 0}% primitive types
+, keywordstyle=[4]\color[rgb]{0, 0.5, 0}% type and value constructors
+, keywordstyle=[5]\color[rgb]{0, 0, 0.75}% macros
+}%
+
+\lstdefinestyle{boxed}{
+  numbers=left%
+, firstnumber=auto%
+, numberblanklines=true%
+, frame=trbL%
+, numberstyle=\tiny%
+, frame=leftline%
+, numbersep=7pt%
+, framesep=5pt%
+, framerule=10pt%
+, xleftmargin=15pt%
+, backgroundcolor=\color[gray]{0.97}%
+, rulecolor=\color[gray]{0.90}%
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    commentstyle=\color[gray]{0.4},
+    stringstyle=\color[rgb]{0, 0, 0.5},
+    frame=single,
+    breakatwhitespace=true,
+    breaklines=true,
+    tabsize=4
+}
+
+\title{
+    {Cuaderno de laboratorio}\\
+    {\normalsize Laboratorio de Desarrollo de Hardware}
+}
+\author{Alejandro Domínguez Muñoz}
+\date{Diciembre 2022}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\part{Plataformas de desarrollo}
+
+\input{1}
+
+\part{Prácticas basadas en MySensors}
+
+\input{2}
+
+\part{Diseño y creación de PCBs}
+
+\input{3}
+
+\end{document}
