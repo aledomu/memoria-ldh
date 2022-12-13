@@ -16,7 +16,12 @@ sudo dd if=./2021-05-07-raspios-buster-armhf-lite.img of=/dev/sdb bs=4M status=p
 Podrían usarse otras distribuciones Linux, como Fedora IoT. Sin embargo, el
 problema es que el software que instalaremos en ejercicios posteriores
 requiere de una interfaz al puerto GPIO obsoleta que no todas las
-distribuciones tienen habilitada.
+distribuciones tienen habilitada\footnotemark.
+
+\footnotetext{
+    Esta incidencia ya ha sido reportada a los desarrolladores en cuanto ha
+    sido descubierta: \url{https://github.com/mysensors/MySensors/issues/1536}
+}
 
 Para habilitar el acceso por SSH desde el primer arranque, colocaremos un
 archivo vacío llamado \verb|ssh| (sin extensión) en la raíz de la partición
