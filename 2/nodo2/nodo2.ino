@@ -66,14 +66,12 @@ void manageTemperature(void) {
   static float lastTemp;
 
   float temperature = dht.getTemperature();
-  /*
+  
   if (isnan(temperature)) {
     #ifdef MY_DEBUG
     Serial.println("Failed reading temperature from DHT!");
     #endif
-  } else 
-  */
-  //if (temperature != lastTemp || nNoUpdatesTemp == FORCE_UPDATE_N_READS) {
+  } else if (temperature != lastTemp || nNoUpdatesTemp == FORCE_UPDATE_N_READS) {
     lastTemp = temperature;
 
     temperature += SENSOR_TEMP_CELSIUS_OFFSET;
@@ -88,9 +86,9 @@ void manageTemperature(void) {
     Serial.print("T: ");
     Serial.println(temperature);
     #endif
-  //} else {
-  //  nNoUpdatesTemp++;
-  //}
+  } else {
+    nNoUpdatesTemp++;
+  }
 }
 
 void manageHumidity(void) {
@@ -98,14 +96,12 @@ void manageHumidity(void) {
   static float lastHum;
 
   float humidity = dht.getHumidity();
-  /*
+  
   if (isnan(humidity)) {
     #ifdef MY_DEBUG
     Serial.println("Failed reading humidity from DHT");
     #endif
-  } else 
-  */
-  //if (humidity != lastHum || nNoUpdatesHum == FORCE_UPDATE_N_READS) {
+  } else if (humidity != lastHum || nNoUpdatesHum == FORCE_UPDATE_N_READS) {
     lastHum = humidity;
 
     nNoUpdatesHum = 0;
@@ -115,9 +111,9 @@ void manageHumidity(void) {
     Serial.print("H: ");
     Serial.println(humidity);
     #endif
-  //} else {
-  //  nNoUpdatesHum++;
-  //}
+  } else {
+    nNoUpdatesHum++;
+  }
 }
 
 void loop() {
