@@ -34,10 +34,6 @@ void presentation() {
 }
 
 void setup() {
-  #ifdef MY_DEBUG
-  Serial.begin(9600);
-  #endif
-
   dht.setup(DHT_DATA_PIN);
   // Esperar al periodo minimo de muestreo para evitar un error de timeout en
   // la primera lectura

@@ -30,10 +30,6 @@ void presentation() {
 }
 
 void setup() {
-  #ifdef MY_DEBUG
-  Serial.begin(9600);
-  #endif
-
   pinMode(relayPin, OUTPUT);
   digitalWrite(relayPin, LOW);
 }
