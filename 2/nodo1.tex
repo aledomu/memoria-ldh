@@ -12,20 +12,20 @@ Y a la Raspberry Pi también se le conecta otro transmisor igual:
 \includegraphics[width=\linewidth]{rpi-nrf24l01-wiring.jpg}
 
 Para la programación de la placa, hay que descargar la librería
-\emph{MySensors}, versión \emph{2.3.2}\footnotemark. Para el nodo 1 en
-particular, también usaremos la librería \emph{Bounce2}, versión
-\emph{2.71.0}\footnotemark.
-
-\footnotetext{\url{
+\emph{MySensors}, versión \emph{2.3.2}\footnote{\url{
     https://github.com/mysensors/MySensors/archive/refs/tags/2.3.2.zip
-}}
-\footnotetext{\url{
+}}. Para el nodo 1 en particular, también usaremos la librería \emph{Bounce2},
+versión \emph{2.71.0}\footnote{\url{
     https://github.com/thomasfredericks/Bounce2/archive/refs/tags/v2.71.zip
-}}
+}}.
 
 El código que usaremos es el que procede:
 
 \lstinputlisting[language=C++, caption=nodo1.ino]{2/nodo1/nodo1.ino}
+
+El segundo bloque de directivas se corresponde con las opciones para activar la
+autenticación de los mensajes. Si además se quiere activar la encriptación, hay
+que descomentar la directiva \verb|#define| actualmente comentada.
 
 Al programar la placa para ambos ejercicios de este bloque hay que tener
 cuidado de que el IDE tenga seleccionado el procesador correcto en

@@ -2,7 +2,14 @@
 #define MY_RF24_IRQ_PIN (2)
 #define MY_RF24_CHANNEL 30
 #define MY_NODE_ID 56
-//#define MY_DEBUG
+#define MY_DEBUG
+
+#define MY_SIGNING_SOFT
+#define MY_SIGNING_SOFT_RANDOMSEED_PIN 7
+#define MY_SIGNING_REQUEST_SIGNATURES
+#define MY_DEBUG_VERBOSE_SIGNING
+
+//#define MY_RF24_ENABLE_ENCRYPTION
 
 #include <MySensors.h>
 #include <Bounce2.h>

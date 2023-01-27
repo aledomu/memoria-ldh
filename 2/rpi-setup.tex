@@ -11,6 +11,12 @@ sudo make install
 sudo systemctl enable --now mysgw.service
 \end{lstlisting}
 
+El soporte de autenticación y encriptación de mensajes debe ser incorporado en
+esta fase. Para la autenticación, hay que activar en la configuración de la
+compilación antes de la misma las banderas
+\verb|--my-signing=software --my-signing-request-signatures|, y para la
+encriptación, \verb|--my-rf24-encryption-enabled|.
+
 Si todo ha ido bien, ejecutaremos la siguiente orden para instalar Domoticz:
 
 \begin{lstlisting}[language=sh]

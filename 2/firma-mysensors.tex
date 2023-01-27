@@ -1,0 +1,172 @@
+Vamos a hacer que la comunicación entre dispositivos de la red de MySensors sea
+con autenticación de los mensajes para poder verificar que los mensajes
+recibidos son efectivamente del autor que dice ser y que no son falsificados.
+Haremos ajustes que dejan el sistema de encriptación preparado también, pero no
+lo habilitaremos porque no tiene mucha utilidad, y además puede cargar en
+exceso el uso de CPU y RAM de la placa Arduino. La diferencia entre la
+autenticación o firma de mensajes y la encriptación es que la segunda se
+encarga de ofuscar el contenido de los mensajes, haciéndolo ininteligible a los
+receptores externos a la red.
+
+Aún con todo, dependiendo de lo bien que funcione el radiotransmisor y su
+alimentación, es posible que de problemas, ya que esta funcionalidad usa el
+tamaño máximo en todos los mensajes, sobrecargando en numerosos casos el
+transmisor. En tales casos, es conveniente desactivar la función en los nodos.
+
+Lo primero que haremos es generar las claves comunes a todos los dispositivos
+del sistema y el identificador del gateway.
+
+El comando en el terminal y la respuesta de generación de la clave HMAC para la
+firma de los mensajes es el siguiente:
+
+\begin{lstlisting}[breakatwhitespace=false]
+# mysgw --gen-soft-hmac-key 
+Generating key... done.
+To use the new key, update the value in /etc/mysensors.conf witn:
+soft_hmac_key=CBCC9E803E7352556400A9763FE209940A3855937F9496CA5127318B64332771
+
+The next line is intended to be used in SecurityPersonalizer.ino:
+#define MY_HMAC_KEY 0XCB,0XCC,0X9E,0X80,0X3E,0X73,0X52,0X55,0X64,0X00,0XA9,0X76,0X3F,0XE2,0X09,0X94,0X0A,0X38,0X55,0X93,0X7F,0X94,0X96,0XCA,0X51,0X27,0X31,0X8B,0X64,0X33,0X27,0X71
+\end{lstlisting}
+
+Para la clave AES de cifrado:
+
+\begin{lstlisting}[breakatwhitespace=false]
+# mysgw --gen-aes-key
+Generating key... done.
+To use the new key, update the value in /etc/mysensors.conf witn:
+aes_key=96E1E71895239728679998D7FDA3584C
+
+The next line is intended to be used in SecurityPersonalizer.ino:
+#define MY_AES_KEY 0X96,0XE1,0XE7,0X18,0X95,0X23,0X97,0X28,0X67,0X99,0X98,0XD7,0XFD,0XA3,0X58,0X4C
+\end{lstlisting}
+
+Y el ID serial del gateway:
+
+\begin{lstlisting}[breakatwhitespace=false]
+# mysgw --gen-soft-serial 
+Generating key... done.
+To use the new key, update the value in /etc/mysensors.conf witn:
+soft_serial_key=BE60091409F1CE6967
+
+The next line is intended to be used in SecurityPersonalizer.ino:
+#define MY_SOFT_SERIAL 0XBE,0X60,0X9,0X14,0X9,0XF1,0XCE,0X69,0X67
+\end{lstlisting}
+
+Las claves HMAC y AES deben ser compartidas por todos los dispositivos de la
+red domótica, pero el ID serial debe ser único para cada uno.
+
+Para ajustar el gateway con estos datos hay que añadir lo siguiente al final
+del archivo \verb|/etc/mysensors.conf|:
+
+\begin{lstlisting}
+# Software signing settings
+# Note: The gateway must have been built with signing
+#       support to use the options below.
+#
+# To generate a HMAC key run mysgw with: --gen-soft-hmac-key
+# copy the new key in the line below and uncomment it.
+soft_hmac_key=CBCC9E803E7352556400A9763FE209940A3855937F9496CA5127318B64332771
+# To generate a serial key run mysgw with: --gen-soft-serial-key
+# copy the new key in the line below and uncomment it.
+soft_serial_key=BE60091409F1CE6967
+
+# Encryption settings
+# Note: The gateway must have been built with encryption
+#       support to use the options below.
+#
+# To generate a AES key run mysgw with: --gen-aes-key
+# copy the new key in the line below and uncomment it.
+aes_key=96E1E71895239728679998D7FDA3584C
+\end{lstlisting}
+
+Finalmente, para grabar los valores de las claves a la placa Arduino,
+descargaremos la carpeta con el personalizador de la seguridad del repositorio
+original\footnotemark y pondremos lo siguiente al principio del archivo
+\verb|SecurityPersonalizer.ino|, según las claves generadas anteriormente y
+generando un ID serial aleatorio:
+
+\footnotetext{\url{
+    https://github.com/mysensors/MySensors/tree/093afa0a8a573bda2bb8084b473778795c526532/examples/SecurityPersonalizer
+}}
+
+\lstinputlisting[firstline=25, lastline=45, breakatwhitespace=false]{
+    2/SecurityPersonalizer/SecurityPersonalizer.ino
+}
+
+Cargamos el archivo en la placa Arduino y nos debería marcar al final que la
+operación se ha realizado con éxito.
+
+\begin{comment}
++------------------------------------------------------------------------------------+
+|                           MySensors security personalizer                          |
++------------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------+
+|                               Configuration settings                               |
++------------------------------------------------------------------------------------+
+| * Guided personalization/storage of keys in EEPROM                                 |
+| * Guided storage and generation of random serial in EEPROM                         |
+| * Software based personalization (no ATSHA204A usage whatsoever)                   |
+| * Will not require any UART confirmations                                          |
+| * Will store HMAC key to EEPROM                                                    |
+| * Will store AES key to EEPROM                                                     |
+| * Will generate soft serial using software                                         |
+| * Will store soft serial to EEPROM                                                 |
++------------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------+
+|                           Hardware security peripherals                            |
++--------------+--------------+--------------+------------------------------+--------+
+| Device       | Status       | Revision     | Serial number                | Locked |
++--------------+--------------+--------------+------------------------------+--------+
+| AVR          | DETECTED     | N/A          | N/A (generation required)    | N/A    |
++--------------+--------------+--------------+------------------------------+--------+
+
++------------------------------------------------------------------------------------+
+|                                   Key generation                                   |
++--------+--------+------------------------------------------------------------------+
+| Key ID | Status | Key                                                              |
++--------+--------+------------------------------------------------------------------+
+| SERIAL | OK     | B58BDDB48DFD8E2344                                               |
++--------+--------+------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------+
+|                                    Key storage                                     |
++--------+--------+------------------------------------------------------------------+
+| Key ID | Status | Key                                                              |
++--------+--------+------------------------------------------------------------------+
+| HMAC   | OK     | CBCC9E803E7352556400A9763FE209940A3855937F9496CA5127318B64332771 |
+| AES    | OK     | 96E1E71895239728679998D7FDA3584C                                 |
+| SERIAL | OK     | B58BDDB48DFD8E2344                                               |
++--------+--------+------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------+
+|                                       EEPROM                                       |
++--------+--------+------------------------------------------------------------------+
+| Key ID | Status | Key                                                              |
++--------+--------+------------------------------------------------------------------+
+| HMAC   | OK     | CBCC9E803E7352556400A9763FE209940A3855937F9496CA5127318B64332771 |
+| AES    | OK     | 96E1E71895239728679998D7FDA3584C                                 |
+| SERIAL | OK     | B58BDDB48DFD8E2344                                               |
++--------+--------+------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------+
+|                      This nodes whitelist entry on other nodes                     |
++------------------------------------------------------------------------------------+
+{.nodeId = <ID of this node>,.serial = {0xB5,0x8B,0xDD,0xB4,0x8D,0xFD,0x8E,0x23,0x44}}
++------------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------+
+|                                  WHAT TO DO NEXT?                                  |
++------------------------------------------------------------------------------------+
+| This device has now been personalized. Run this sketch with its current settings   |
+| on all the devices in your network that have security enabled.                     |
++------------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------+
+|                                  Execution result                                  |
++------------------------------------------------------------------------------------+
+| SUCCESS                                                                            |
++------------------------------------------------------------------------------------+
+\end{comment}
